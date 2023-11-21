@@ -69,6 +69,10 @@ main {
   color: #fff;
 }
 
+.row {
+  display: flex;
+}
+
 .empty {
   background-color: #a5a5a5;
 }
