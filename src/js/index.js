@@ -47,11 +47,12 @@ const getGameWord = () => {
 
 
 // FUNCION PARA PINTAR LAS LETRAS DE LA PALABRA QUE INTRODUZCA EL USUARIO
-const showWordOnBoard = (word, gameWord) => {
+const showWordOnBoard = (word, className) => {
     for (let i = 0; i < word.length; i++) {
         setTimeout(() => {
             const currRow = boardGameElement.children[row];
             const currCell = currRow.children[col];
+            currCell.classList.add(className)
             currCell.textContent = word[i];
             col++;
             if (col === wordLength) {
@@ -62,25 +63,51 @@ const showWordOnBoard = (word, gameWord) => {
     }
 }
 
-
-// EVENTO DE ESCUCHA PARA OBTENER EL VALOR DEL INPUT Y SABER CUANDO HA PRESIONADO ENTER EL USUARIO PARA INTRODUCIR LA PALABRA
-inputElement.addEventListener('keyup', (e) => {
+// FUNCION PARA AGREGAR PALABRA SI EL USUARIO LE DA A ENTER
+const addWord = (e) => {
     const word = inputElement.value;
     if (e.key === 'Enter') {
+        console.log(gameWord);
         if (word.length === wordLength) {
-            showWordOnBoard(word, gameWord);
-            // verifyWordLetters(word, gameWord)
+            verifyWordLetters(word, gameWord)
             inputElement.value = '';
         } else {
             alert(`La palabra debe tener exactamente ${wordLength} letras`);
         }
     }
+}
+
+// EVENTO DE ESCUCHA PARA OBTENER EL VALOR DEL INPUT Y SABER CUANDO HA PRESIONADO ENTER EL USUARIO PARA INTRODUCIR LA PALABRA
+inputElement.addEventListener('keyup', (e) => {
+    addWord(e)
 });
+
+
+
+const checkletter = (letter) => {
+    return gameWord.includes(letter);
+}
+
 
 // // FUNCION PARA COMPROBAR POSICION DE LAS LETRAS Y SI LAS CONTIENE
 
-// const verifyWordLetters = (word, gameWord) => {
-//     for (let i = 0; i < word.length; i++) {
-        
-//     }
-// }   
+const verifyWordLetters = (word, gameWord) => {
+    let className;
+    for (let i = 0; i < word.length; i++) {
+        const foundLetter = checkletter(word[i]);
+        console.log(foundLetter);
+        if (!foundLetter) {
+            console.log(`la ${word[i]} no esta`);
+            className = 'empty'
+        } else {
+            console.log(`Contiene la letra ${word[i]}`);
+            className = 'contain'
+            if (gameWord[i] === word[i]) {
+                console.log(`la letra ${word[i]} esta en la misma posicion`);
+                className = 'correct'
+            }
+        }
+    }
+    showWordOnBoard(word, className);
+}
+
