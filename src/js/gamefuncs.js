@@ -26,10 +26,11 @@ export const initialize = () => {
         }
     }
     boardGameElement.append(fragment);
+    getGameWord();
 }
 
 // FUNCION PARA OBTENER LA PALABRA ALEATORIA DEL JUEGO EN CADA RONDA
-export const getGameWord = () => {
+const getGameWord = () => {
     // ARRAY DE PALABRAS
     const words = ['buzon', 'playa', 'fuego', 'linea', 'gatos', 'techo', 'mesas', 'pizza', 'piano', 'huevo'];
     const randomNumber = Math.floor(Math.random() * words.length);
@@ -39,17 +40,15 @@ export const getGameWord = () => {
 // FUNCION PARA PINTAR LAS LETRAS DE LA PALABRA QUE INTRODUZCA EL USUARIO
 const showWordOnBoard = (word, className) => {
     for (let i = 0; i < word.length; i++) {
-        setTimeout(() => {
-            const currRow = boardGameElement.children[row];
-            const currCell = currRow.children[col];
-            currCell.classList.add(className)
-            currCell.textContent = word[i];
-            col++;
-            if (col === wordLength) {
-                col = 0;
-                row++;
-            }
-        }, i * 500);
+        const currRow = boardGameElement.children[row];
+        const currCell = currRow.children[col];
+        currCell.classList.add(className)
+        currCell.textContent = word[i];
+        col++;
+        if (col === wordLength) {
+            col = 0;
+            row++;
+        }
     }
 }
 
@@ -77,15 +76,11 @@ const verifyWordLetters = (word, gameWord) => {
     let className;
     for (let i = 0; i < word.length; i++) {
         const foundLetter = checkletter(word[i]);
-        console.log(foundLetter);
         if (!foundLetter) {
-            console.log(`la ${word[i]} no esta`);
             className = 'empty'
         } else {
-            console.log(`Contiene la letra ${word[i]}`);
             className = 'contain'
             if (gameWord[i] === word[i]) {
-                console.log(`la letra ${word[i]} esta en la misma posicion`);
                 className = 'correct'
             }
         }
