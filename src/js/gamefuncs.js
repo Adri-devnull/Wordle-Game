@@ -8,7 +8,6 @@ const wordLength = 5;
 let gameWord = '';
 
 // VARIABLES DE NUMERO DE FILAS Y COLUMNAS (INTENTOS Y LETRAS DE LA PALABRA)
-let col = 0;
 let row = 0;
 
 // FUNCION PARA PINTAR EL TABLERO DE JUEGO 
@@ -37,21 +36,6 @@ const getGameWord = () => {
     gameWord = words[randomNumber];
 }
 
-// FUNCION PARA PINTAR LAS LETRAS DE LA PALABRA QUE INTRODUZCA EL USUARIO
-const showWordOnBoard = (word, className) => {
-    for (let i = 0; i < word.length; i++) {
-        const currRow = boardGameElement.children[row];
-        const currCell = currRow.children[col];
-        currCell.classList.add(className)
-        currCell.textContent = word[i];
-        col++;
-        if (col === wordLength) {
-            col = 0;
-            row++;
-        }
-    }
-}
-
 // FUNCION PARA AGREGAR PALABRA SI EL USUARIO LE DA A ENTER
 export const addWord = (e) => {
     const word = inputElement.value;
@@ -66,24 +50,37 @@ export const addWord = (e) => {
     }
 }
 
-// FUNCION PARA COMPROBAR SI LA LETRA ESTA O NO EN LA PALABRA
-const checkletter = (letter) => {
-    return gameWord.includes(letter);
-}
+const paintLetterInCell = (letter, position, className) => {
+	const element = boardGameElement.children[row].children[position];
+	element.classList.add(className);
+	element.textContent = letter;
+};
 
 // FUNCION PARA COMPROBAR POSICION DE LAS LETRAS Y AGREGAR ESTILO
-const verifyWordLetters = (word, gameWord) => {
-    let className;
-    for (let i = 0; i < word.length; i++) {
-        const foundLetter = checkletter(word[i]);
-        if (!foundLetter) {
-            className = 'empty'
-        } else {
-            className = 'contain'
-            if (gameWord[i] === word[i]) {
-                className = 'correct'
-            }
-        }
-        showWordOnBoard(word[i], className);
-    }
-}
+const verifyWordLetters = word => {
+	let wordToCheck = gameWord;
+	let className;
+
+	for (let i = 0; i < gameWord.length; i++) {
+		const letter = word[i];
+
+		if (letter === wordToCheck[i]) {
+			className = 'correct';
+			wordToCheck = wordToCheck.replace(letter, '*');
+			paintLetterInCell(letter, i, className);
+		}
+	}
+
+	for (let i = 0; i < gameWord.length; i++) {
+		const letter = word[i];
+		if (wordToCheck.includes(letter)) {
+			className = 'contain';
+			wordToCheck = wordToCheck.replace(letter, '*');
+		} else {
+			className = 'empty';
+		}
+		paintLetterInCell(letter, i, className);
+	}
+
+	row++;
+};
